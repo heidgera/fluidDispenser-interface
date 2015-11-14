@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="css/main.css"></link>
+    <script src="src/vendor/muse/include.js" main="src/app.js"></script>
+    <hard-ware serialport="usbmodem">
+      <!-- <in-put type="analog" pin="0" report="30" low="0" hi="1023" result="#trace.newX"></in-put>
+      <in-put type="analog" pin="1" report="30" low="1023" hi="0" result="#trace.newY"></in-put> -->
+      <!-- <in-put id="volumeControl" type="analog" pin="2" report="30" low="0" hi="1023"></in-put> -->
+      <in-put id="authKey" type="digital" debounce="100" pin="2"></in-put>
+      <in-put id="powerSwitch" type="digital" debounce="100" pin="3"></in-put>
+      <out-put id="tube1" type="digital" pin="5"></out-put>
+      <out-put id="tube2" type="digital" pin="6"></out-put>
+      <out-put id="tube3" type="digital" pin="7"></out-put>
+      <out-put id="tube4" type="digital" pin="8"></out-put>
+      <out-put id="tube5" type="digital" pin="9"></out-put>
+    </hard-ware>
+    <config-file file="data/config.xml"></config-file>
+    <template id="keyTemplate">
+    </template>
+  </head>
+  <body>
+    <div id="authLock">
+      <div class="block">Insert USB Key to Authenticate</div>
+    </div>
+    <div id="fluidSelect">
+    </div>
+    <!-- Titles -->
+
+    <!-- Dialog overlay -->
+    <div class="overlay" id="fade">
+    </div>
+  </body>
+</html>

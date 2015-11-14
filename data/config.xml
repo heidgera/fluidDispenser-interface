@@ -1,0 +1,3 @@
+<config>
+  <muteTimeout type="num">600</muteTimeout>
+</config>
