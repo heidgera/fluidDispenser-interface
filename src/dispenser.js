@@ -9,7 +9,7 @@ include(['src/keypad.js'], function() {
 
       //this.stroke = µ('|>stroke', this);
       this.fill = µ('|>fill', this);
-      this.output = µ(µ('|>output', this));
+      this.output = µ('#'+µ('|>output', this));
       this.time = µ('|>time', this);
       this.attempts = 10;
       this.done = false;
@@ -141,7 +141,7 @@ include(['src/keypad.js'], function() {
         fade.style.display = 'block';
         _this.dispensing = true;
 
-        //this.output.write(1);
+        _this.output.write(1);
         setTimeout(function() {
           _this.dispensing = false;
           _this.done = true;
@@ -172,12 +172,12 @@ include(['src/keypad.js'], function() {
             _this.close();
             µ('#complete').style.display = 'block';
             setTimeout(function() {
-              µ('div',µ('#complete')).innerHTML = '';
-              µ('div',µ('#complete')).textContent = 'Process Complete';
+              µ('div', µ('#complete')).innerHTML = '';
+              µ('div', µ('#complete')).textContent = 'Process Complete';
             }, 3000);
           }
 
-          //this.output.write(0);
+          _this.output.write(0);
         }, this.time);
       };
 

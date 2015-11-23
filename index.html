@@ -3,15 +3,20 @@
     <meta content='user-scalable=0' name='viewport' />
     <link rel="stylesheet" href="css/main.css"></link>
     <script src="src/vendor/muse/include.js" main="src/app.js"></script>
-    <hard-ware serialport="usbmodem">
-      <in-put id="authKey" type="digital" debounce="100" pin="2"></in-put>
-      <in-put id="powerSwitch" type="digital" debounce="100" pin="3"></in-put>
+    <hard-ware serialport="usbserial">
+      <out-put id="reset1" type="digital" pin="2"></out-put>
       <out-put id="tube1" type="digital" pin="3"></out-put>
+      <out-put id="reset2" type="digital" pin="4"></out-put>
       <out-put id="tube2" type="digital" pin="5"></out-put>
-      <out-put id="tube3" type="digital" pin="6"></out-put>
-      <out-put id="tube4" type="digital" pin="9"></out-put>
-      <out-put id="tube5" type="digital" pin="10"></out-put>
+      <out-put id="reset3" type="digital" pin="6"></out-put>
+      <out-put id="tube3" type="digital" pin="7"></out-put>
+      <out-put id="tube4" type="digital" pin="8"></out-put>
+      <out-put id="reset4" type="digital" pin="9"></out-put>
       <out-put id="tube5" type="digital" pin="11"></out-put>
+      <out-put id="reset5" type="digital" pin="12"></out-put>
+      <out-put id="tube6" type="digital" pin="13"></out-put>
+      <out-put id="reset6" type="digital" pin="14"></out-put>
+      <in-put id="auth" type="digital" debounce="100" pin="15"></in-put>
     </hard-ware>
     <con-fig file="data/config.xml"></con-fig>
     <template id="interfaceTemp">

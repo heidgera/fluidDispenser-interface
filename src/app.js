@@ -19,6 +19,14 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
   µ('#complete').spin.style.width = '25%';
   µ('#complete').spin.style.left = '37.5%';
 
+  µ('#auth').onData = function(val) {
+    if (val) {
+      authLockout = false;
+      µ('#authLock').style.display = 'none';
+      console.log('unlock');
+    }
+  };
+
   document.onkeypress = function(e) {
 
     e.preventDefault();
@@ -45,6 +53,7 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
       return false;
     } else if (keyCode === 13) {    // enter
       if (!authLockout) parseText();
+      µ('#tube6').write(1);
       return false;
     } else if (keyCode === 40) {      // down arrow
       if (prevPrompt.nextSibling !== null) {
@@ -61,7 +70,7 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
       console.log('here');
 
       //if (authLockout) {
-      //  authLockout = false;
+      authLockout = false;
       µ('#authLock').style.display = 'none';
 
       //}
