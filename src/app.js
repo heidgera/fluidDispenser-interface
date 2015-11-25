@@ -1,4 +1,14 @@
-include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
+var localStore = null;
+var hardwareJS = '';
+if (window.isApp === true) {
+  localStore = chrome.storage.local;
+  hardwareJS = './hardwareApp.js';
+} else {
+  localStore  = localStorage;
+  hardwareJS = './hardware.js';
+}
+
+include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   var authLockout = true;
 
@@ -46,7 +56,6 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
 
   document.onkeydown = function(e) {
     var keyCode = (window.event) ? e.which : e.keyCode;
-
     if (keyCode === 8) {    // delete
       var fld = µ('.fld', curPrompt);
       fld.textContent = fld.textContent.substring(0, fld.textContent.length - 1);
@@ -67,6 +76,7 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
         µ('.fld', curPrompt).innerHTML = µ('.fld', prevPrompt).innerHTML;
       }
     } else if (keyCode === 27) {  //escape
+      e.preventDefault();
       console.log('here');
 
       //if (authLockout) {
@@ -74,6 +84,7 @@ include(['./hardware.js', './config.js', 'src/dispenser.js'], function() {
       µ('#authLock').style.display = 'none';
 
       //}
+      return false;
     }
 
   };

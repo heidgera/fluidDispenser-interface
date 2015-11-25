@@ -9,7 +9,7 @@ include(['src/keypad.js'], function() {
 
       //this.stroke = µ('|>stroke', this);
       this.fill = µ('|>fill', this);
-      this.output = µ('#'+µ('|>output', this));
+      this.output = µ('#' + µ('|>output', this));
       this.time = µ('|>time', this);
       this.attempts = 10;
       this.done = false;
