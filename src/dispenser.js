@@ -92,7 +92,13 @@ include(['src/keypad.js'], function() {
       this.button.onmousedown = function(e) {
         e.preventDefault();
         _this.open();
+        return false;
       };
+
+      //this.face.ontouchstart = function (e) {
+        //e.preventDefault();
+        //return false;
+      //}
 
       this.open = function() {
         if (!_this.done)
@@ -161,6 +167,7 @@ include(['src/keypad.js'], function() {
           t.appendChild(chck);
 
           _this.submit.style.opacity = '.25';
+          _this.tries.textContent = '';
 
           var disps = document.querySelectorAll('disp-enser');
           var done = true;
