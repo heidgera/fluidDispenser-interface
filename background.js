@@ -12,7 +12,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
       //bounds: {width: 800, height: 600},
       state: 'fullscreen',
     },
-    function(win) {win.contentWindow.isApp = true;}
+    function(win) {win.contentWindow.isApp = true; win.contentWindow.requestFullscreen();}
   );
 
 });

@@ -185,6 +185,7 @@ sub {
 }
 
 #authLock {
+  display: none;
 }
 
 #authLock > div {
