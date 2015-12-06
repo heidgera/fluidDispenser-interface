@@ -8,7 +8,7 @@ chrome.app.runtime.onLaunched.addListener(function(launchData) {
   chrome.app.window.create(
     'index.html',
     {
-      id: 'mainWindow',
+      //id: 'mainWindow',
       state: 'fullscreen',
     },
     function(win) {win.contentWindow.isApp = true; win.contentWindow.requestFullscreen();}

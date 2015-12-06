@@ -37,23 +37,35 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
     }
   };
 
-  function absorbEvent_(event) {
-      var e = event || window.event;
-      e.preventDefault && e.preventDefault();
-      //e.stopPropagation && e.stopPropagation();
-      //e.cancelBubble = true;
-      //e.returnValue = false;
-      return false;
+    function touchHandler(event) {
+        var first = event.changedTouches[0],
+            type = "";
+        switch(event.type)
+        {
+            case "touchstart": type = "mousedown"; break;
+            case "touchmove":  type = "mousemove"; break;
+            case "touchend":   type = "mouseup";   break;
+            default:           return;
+        }
+
+        // initMouseEvent(type, canBubble, cancelable, view, clickCount,
+        //                screenX, screenY, clientX, clientY, ctrlKey,
+        //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+        var simulatedEvent = document.createEvent("MouseEvent");
+        simulatedEvent.initMouseEvent(type, true, true, window, 1,
+                                      first.screenX, first.screenY,
+                                      first.clientX, first.clientY, false,
+                                      false, false, false, 0/*left*/, null);
+
+        first.target.dispatchEvent(simulatedEvent);
+        event.preventDefault();
     }
 
-    function preventLongPressMenu(node) {
-      //node.ontouchstart = absorbEvent_;
-      //node.ontouchmove = absorbEvent_;
-      node.ontouchend = absorbEvent_;
-      //node.ontouchcancel = absorbEvent_;
-    }
-
-  preventLongPressMenu(document);
+    document.addEventListener("touchstart", touchHandler, true);
+    document.addEventListener("touchmove", touchHandler, true);
+    document.addEventListener("touchend", touchHandler, true);
+    document.addEventListener("touchcancel", touchHandler, true);
 
   document.onkeypress = function(e) {
 

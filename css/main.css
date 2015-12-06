@@ -3,6 +3,7 @@ body {
   background-color: black;
   font-family: "Lucida Console", Monaco, monospace;
   color: #aaa;/*color: #080;*/
+  webkit-touch-callout: none;
 }
 
 ::-webkit-scrollbar {
@@ -185,7 +186,6 @@ sub {
 }
 
 #authLock {
-  display: none;
 }
 
 #authLock > div {
@@ -227,6 +227,7 @@ sub {
   left:25%;
   width:auto;
   height:100%;
+  opacity:.5;
 }
 
 #chck {

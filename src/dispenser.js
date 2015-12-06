@@ -37,7 +37,7 @@ include(['src/keypad.js'], function() {
       this.button.appendChild(beaker);
 
       var dim = µ('+div', this.button);
-      dim.className = 'dim over';
+      dim.className = 'over';
 
       this.name = µ('+div', dim);
       for (var i = 0; i < this.id.length; i++) {
@@ -138,7 +138,7 @@ include(['src/keypad.js'], function() {
             this.tries.textContent = this.attempts + atmp;
           } else {
             _this.fail = true;
-            this.failCount(3);
+            this.failCount(30);
           }
         }
       };

@@ -9,19 +9,19 @@
     this.connect = function(partialName, cb) {
       chrome.serial.getDevices(function(ports) {
         for (var i = 0; i < ports.length; i++) {
-		console.log(ports[i]);
+          console.log(ports[i]);
           if (ports[i].path.indexOf(partialName) > -1) {
             _this.port = ports[i].path;
             chrome.serial.connect(_this.port, {bitrate: 115200}, function(info) {
               _this.connectionId = info.connectionId;
-              setTimeout(cb,2000);
+              setTimeout(cb, 2000);
             });
 
             return;
           }
         }
 
-        console.log('Port not found');
+        console.log(partialName + ' not found');
       });
     };
 
@@ -52,11 +52,11 @@
     var onReceiveCallback = function(info) {
       if (info.connectionId == _this.connectionId && info.data) {
         var str = convertArrayBufferToString(info.data);
-        if (str.length > 1 && (str.charAt(str.length - 1) ==='\n'|| str.charAt(str.length - 1) ==='\n')) {
+        if (str.length > 1 && (str.charAt(str.length - 1) === '\n' || str.charAt(str.length - 1) === '\n')) {
           stringReceived += str.substring(0, str.length - 1);
           _this.messageCallback(stringReceived);
           stringReceived = '';
-        } else if(str.charAt(str.length - 1) !=='\n' || str.charAt(str.length - 1) !=='\r'){
+        } else if (str.charAt(str.length - 1) !== '\n' || str.charAt(str.length - 1) !== '\r') {
           stringReceived += str;
         }
       }
@@ -145,7 +145,8 @@
 
     var START = 128;
     var DIGI_READ = 0;
-    var DIGI_WRITE = 32;  //pins 2-13
+    var DIGI_WRITE = 32;  //pins 2-15
+    var DIGI_WRITE_2 = 24; //pins 16-19
     var ANA_READ = 64;
     var DIGI_WATCH_2 = 72; //pins 14-19
     var ANA_REPORT = 80;
@@ -160,7 +161,7 @@
      For Digital Read:
                         Byte 1
              _______________________________
-            | 1 | 0 | 0 | D | D | 2 | 1 | 0 |
+            | 1 | 0 | 0 | D | D | D | D | D |
              -------------------------------
 
              D: bits representing pin number to read
@@ -182,11 +183,21 @@
 
             D: bits representing the pin number (14-19 [but minus 14]) to watch
 
-    For Digital Write on pins 2-13:
+    For Digital Write on pins 2-15:
                        Byte 1
              _______________________________
             | 1 | 0 | 1 | P | P | P | P | S |
              -------------------------------
+
+            P: bits representing pin number to read
+            S: bit indicating pin state
+
+        OR, for pins 16-19:
+
+                    Byte 1
+            _______________________________
+            | 1 | 0 | 0 | 1 | 1 | P | P | S |
+            -------------------------------
 
             P: bits representing pin number to read
             S: bit indicating pin state
@@ -243,7 +254,6 @@
 
     this.serial = null;
 
-
     this.onMessage = function(msg) {
       if (msg.length >= 1) {
         for (var i = 0; i < msg.length; i++) {
@@ -267,8 +277,10 @@
     }
 
     this.digitalWrite = function(pin, state) {
-      if (pin <= 13) this.serial.write(asChar(START + DIGI_WRITE + ((pin & 15) << 1) + (state & 1)));
-      else console.log('Pin must be less than or equal to 13');
+      if (pin <= 15) this.serial.write(asChar(START + DIGI_WRITE + ((pin & 15) << 1) + (state & 1)));
+      else if (pin <= 19) this.serial.write(asChar(START + DIGI_WRITE_2 + ((pin - 16) << 1) + (state & 1)));
+
+      //else console.log('Pin must be less than or equal to 13');
     };
 
     this.digitalRead = function(pin) {
@@ -400,9 +412,13 @@
   /////////////////////////////////////////////////////////////
 
   var hardWare = inheritFrom(webArduino, function() {
+
+    this.onConnect = function() {};
+
     // function to call when the websocket server connects to the serial port.
     this.serialOpenCB = function() {
       console.log('opened serial');
+      this.onConnect();
       this.ready = true;
       var _this = this;
       this.onReady();
