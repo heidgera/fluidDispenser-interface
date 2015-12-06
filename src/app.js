@@ -29,6 +29,12 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   µ('#complete').spin.style.width = '25%';
   µ('#complete').spin.style.left = '37.5%';
 
+  // µ('hard-ware').onConnect = function() {
+  //   for (var i = 1; i < 7; i++) {
+  //     µ('#tube' + i).write(0);
+  //   }
+  // };
+
   µ('#auth').onData = function(val) {
     if (val) {
       authLockout = false;
