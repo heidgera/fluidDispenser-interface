@@ -2,7 +2,7 @@ include(['src/keypad.js'], function() {
 
   var localStore = null;
   var hardwareJS = '';
-  if (window.isApp === true) localStore = chrome.storage.local,console.log('app');
+  if (window.isApp === true) localStore = chrome.storage.local, console.log('app');
   else localStore  = localStorage;
 
   var dispenser = inheritFrom(HTMLElement, function() {
@@ -153,14 +153,17 @@ include(['src/keypad.js'], function() {
 
       this.reset = function(fxn) {
         console.log('resetting ' + _this.num);
-        if (localStore.getItem('dispense' + _this.num)) {
-          _this.output.write(0);
-          _this.resetPin.write(1);
-          setTimeout(function() {
-            localStore.setItem('dispense' + _this.num, false);
-            fxn();
-          }, _this.time);
-        }
+        localStore.get('dispense' + _this.num, function(resp) {
+          if (resp['dispense' + _this.num]) {
+            _this.output.write(0);
+            _this.resetPin.write(1);
+            setTimeout(function() {
+              var key = 'dispense' + _this.num;
+              localStore.set({ key: false });
+              fxn();
+            }, _this.time);
+          }
+        });
       };
 
       this.dispense = function() {
@@ -206,7 +209,8 @@ include(['src/keypad.js'], function() {
             }, 3000);
           }
 
-          localStore.setItem('dispense' + _this.num, true);
+          var key = 'dispense' + _this.num;
+          localStore.set({ key: true });
           _this.output.write(0);
         }, this.time);
       };
