@@ -29,11 +29,16 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   µ('#complete').spin.style.width = '25%';
   µ('#complete').spin.style.left = '37.5%';
 
-  // µ('hard-ware').onConnect = function() {
-  //   for (var i = 1; i < 7; i++) {
-  //     µ('#tube' + i).write(0);
-  //   }
-  // };
+  function resetNext(num) {
+    if (localStore.getItem('dispense' + num)) {
+      µ('disp-enser[output=' + i + ']').reset(resetNext(num + 1));
+    } else if (num < 7) resetNum(num + 1);
+  }
+
+  µ('hard-ware').onConnect = function() {
+    var i = 1;
+    resetNext(1);
+  };
 
   µ('#auth').onData = function(val) {
     if (val) {
@@ -43,35 +48,41 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
     }
   };
 
-    function touchHandler(event) {
-        var first = event.changedTouches[0],
-            type = "";
-        switch(event.type)
-        {
-            case "touchstart": type = "mousedown"; break;
-            case "touchmove":  type = "mousemove"; break;
-            case "touchend":   type = "mouseup";   break;
-            default:           return;
-        }
+  µ('#fullReset').onData = function(val) {
+    if (val) {
 
-        // initMouseEvent(type, canBubble, cancelable, view, clickCount,
-        //                screenX, screenY, clientX, clientY, ctrlKey,
-        //                altKey, shiftKey, metaKey, button, relatedTarget);
+    }
+  };
 
-        var simulatedEvent = document.createEvent("MouseEvent");
-        simulatedEvent.initMouseEvent(type, true, true, window, 1,
-                                      first.screenX, first.screenY,
-                                      first.clientX, first.clientY, false,
-                                      false, false, false, 0/*left*/, null);
-
-        first.target.dispatchEvent(simulatedEvent);
-        event.preventDefault();
+  function touchHandler(event) {
+    var first = event.changedTouches[0],
+        type = '';
+    switch (event.type)
+    {
+      case 'touchstart': type = 'mousedown'; break;
+      case 'touchmove':  type = 'mousemove'; break;
+      case 'touchend':   type = 'mouseup';   break;
+      default:           return;
     }
 
-    document.addEventListener("touchstart", touchHandler, true);
-    document.addEventListener("touchmove", touchHandler, true);
-    document.addEventListener("touchend", touchHandler, true);
-    document.addEventListener("touchcancel", touchHandler, true);
+    // initMouseEvent(type, canBubble, cancelable, view, clickCount,
+    //                screenX, screenY, clientX, clientY, ctrlKey,
+    //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+    var simulatedEvent = document.createEvent('MouseEvent');
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+                                  first.screenX, first.screenY,
+                                  first.clientX, first.clientY, false,
+                                  false, false, false, 0/*left*/, null);
+
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+  }
+
+  document.addEventListener('touchstart', touchHandler, true);
+  document.addEventListener('touchmove', touchHandler, true);
+  document.addEventListener('touchend', touchHandler, true);
+  document.addEventListener('touchcancel', touchHandler, true);
 
   document.onkeypress = function(e) {
 
@@ -90,40 +101,31 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   };
 
+  var outputs = ['1', '2', '3', '4', '5', '6'];
+  var resets = ['Q', 'W', 'E', 'R', 'T', 'Y'];
+
   document.onkeydown = function(e) {
-    var keyCode = (window.event) ? e.which : e.keyCode;
-    if (keyCode === 8) {    // delete
-      var fld = µ('.fld', curPrompt);
-      fld.textContent = fld.textContent.substring(0, fld.textContent.length - 1);
-      return false;
-    } else if (keyCode === 13) {    // enter
-      if (!authLockout) parseText();
-      µ('#tube6').write(1);
-      return false;
-    } else if (keyCode === 40) {      // down arrow
-      if (prevPrompt.nextSibling !== null) {
-        prevPrompt = prevPrompt.nextSibling;
-        µ('.fld', curPrompt).innerHTML = µ('.fld', prevPrompt).innerHTML;
-      } else µ('.fld', curPrompt).innerHTML = '';
-    } else if (keyCode === 38) {      // up arrow
-      if (prevPrompt.previousSibling !== null && prevPrompt.previousSibling !== '') {
-        console.log(prevPrompt.innerHTML);
-        prevPrompt = prevPrompt.previousSibling;
-        µ('.fld', curPrompt).innerHTML = µ('.fld', prevPrompt).innerHTML;
+    for (var i = 0; i < 6; i++) {
+      if (String.fromCharCode(e.which) == outputs[i]) {
+        µ('#reset' + (i + 1)).write(1);
+        µ('#tube' + (i + 1)).write(0);
+      } else if (String.fromCharCode(e.which) == resets[i]) {
+        µ('#reset' + (i + 1)).write(0);
+        µ('#tube' + (i + 1)).write(1);
       }
-    } else if (keyCode === 27) {  //escape
-      e.preventDefault();
-      console.log('here');
-
-      //if (authLockout) {
-      authLockout = false;
-      µ('#authLock').style.display = 'none';
-
-      //}
-      return false;
     }
 
+    if (e.which == 27) {
+      authLockout = false;
+      µ('#authLock').style.display = 'none';
+      console.log('unlock');
+    }
   };
 
-  window.requestFullscreen();
+  document.onkeyup = function(e) {
+    for (var i = 0; i < 6; i++) {
+      µ('#reset' + (i + 1)).write(0);
+      µ('#tube' + (i + 1)).write(0);
+    }
+  };
 });

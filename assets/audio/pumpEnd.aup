@@ -1,0 +1,34 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="pumpEnd_data" version="1.3.0" audacityversion="2.0.5" sel0="0.0464399093" sel1="0.0464399093" vpos="0" h="0.0000000000" zoom="86.1328125000" rate="44100.0">
+	<tags/>
+	<wavetrack name="188447__dheming__metal-punch-01" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="96000" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="472417">
+				<waveblock start="0">
+					<simpleblockfile filename="e0000fa1.au" len="21728" min="-0.075307" max="0.060718" rms="0.012008"/>
+				</waveblock>
+				<waveblock start="21728">
+					<simpleblockfile filename="e0000123.au" len="137435" min="-0.152807" max="0.1441" rms="0.025282"/>
+				</waveblock>
+				<waveblock start="159163">
+					<simpleblockfile filename="e0000d36.au" len="228171" min="-0.093332" max="0.113661" rms="0.014978"/>
+				</waveblock>
+				<waveblock start="387334">
+					<simpleblockfile filename="e0000eca.au" len="85083" min="-0.016486" max="0.014802" rms="0.00309"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="Audio Track" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0">
+		<waveclip offset="0.00000000">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="217017">
+				<waveblock start="0">
+					<simpleblockfile filename="e0000bfa.au" len="217017" min="-0.228428" max="0.260892" rms="0.044449"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>

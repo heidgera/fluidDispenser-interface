@@ -1,4 +1,10 @@
 include(['src/keypad.js'], function() {
+
+  var localStore = null;
+  var hardwareJS = '';
+  if (window.isApp === true) localStore = chrome.storage.local,console.log('app');
+  else localStore  = localStorage;
+
   var dispenser = inheritFrom(HTMLElement, function() {
     this.createdCallback = function() {
       var _this = this;
@@ -9,7 +15,9 @@ include(['src/keypad.js'], function() {
 
       //this.stroke = µ('|>stroke', this);
       this.fill = µ('|>fill', this);
-      this.output = µ('#' + µ('|>output', this));
+      this.num = µ('|>output', this);
+      this.output = µ('#tube' + this.num);
+      this.resetPin = µ('#reset' + this.num);
       this.time = µ('|>time', this);
       this.attempts = 10;
       this.done = false;
@@ -96,8 +104,8 @@ include(['src/keypad.js'], function() {
       };
 
       //this.face.ontouchstart = function (e) {
-        //e.preventDefault();
-        //return false;
+      //e.preventDefault();
+      //return false;
       //}
 
       this.open = function() {
@@ -134,7 +142,7 @@ include(['src/keypad.js'], function() {
           _this.text.textContent = this.keypad.input = '';
           if (--this.attempts >= 1) {
             var atmp = (this.attempts == 1) ? ' attempt remains' : ' attempts remain';
-            this.instruct.textContent = 'Invalid code; ' + this.attempts + atmp;
+            this.instruct.textContent = 'Invalid amount; ' + this.attempts + atmp;
             this.tries.textContent = this.attempts + atmp;
           } else {
             _this.fail = true;
@@ -143,10 +151,23 @@ include(['src/keypad.js'], function() {
         }
       };
 
+      this.reset = function(fxn) {
+        console.log('resetting ' + _this.num);
+        if (localStore.getItem('dispense' + _this.num)) {
+          _this.output.write(0);
+          _this.resetPin.write(1);
+          setTimeout(function() {
+            localStore.setItem('dispense' + _this.num, false);
+            fxn();
+          }, _this.time);
+        }
+      };
+
       this.dispense = function() {
         fade.style.display = 'block';
         _this.dispensing = true;
 
+        _this.resetPin.write(0);
         _this.output.write(1);
         setTimeout(function() {
           _this.dispensing = false;
@@ -181,9 +202,11 @@ include(['src/keypad.js'], function() {
             setTimeout(function() {
               µ('div', µ('#complete')).innerHTML = '';
               µ('div', µ('#complete')).textContent = 'Process Complete';
+              µ('#release').write(1);
             }, 3000);
           }
 
+          localStore.setItem('dispense' + _this.num, true);
           _this.output.write(0);
         }, this.time);
       };
