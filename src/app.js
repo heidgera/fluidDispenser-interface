@@ -40,6 +40,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   µ('hard-ware').onConnect = function() {
     var i = 1;
     resetNext(1);
+    µ('#release').write(0)
   };
 
   µ('#auth').onData = function(val) {
