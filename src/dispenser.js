@@ -202,10 +202,11 @@ include(['src/keypad.js'], function() {
           if (done) {
             _this.close();
             µ('#complete').style.display = 'block';
+            µ('#cylinder').write(0);
+            console.log('released cylinder');
             setTimeout(function() {
               µ('div', µ('#complete')).innerHTML = '';
               µ('div', µ('#complete')).textContent = 'Process Complete';
-              µ('#release').write(1);
             }, 3000);
           }
 
