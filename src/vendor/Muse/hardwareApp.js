@@ -4,15 +4,13 @@
     this.port = '';
     this.connectionId = null;
 
-    console.log(chrome.serial);
-
     this.connect = function(partialName, cb) {
       chrome.serial.getDevices(function(ports) {
         for (var i = 0; i < ports.length; i++) {
-          console.log(ports[i]);
+          console.log(ports[i].path);
           if (ports[i].path.indexOf(partialName) > -1) {
             _this.port = ports[i].path;
-            chrome.serial.connect(_this.port, {bitrate: 115200}, function(info) {
+            chrome.serial.connect(_this.port, { bitrate: 115200 }, function(info) {
               _this.connectionId = info.connectionId;
               setTimeout(cb, 2000);
             });
@@ -255,7 +253,9 @@
     this.serial = null;
 
     this.onMessage = function(msg) {
-      if (msg.length >= 1) {
+      if (~msg.indexOf('init')) {
+        this.init();
+      } else if (msg.length >= 1) {
         for (var i = 0; i < msg.length; i++) {
           var chr = msg.charCodeAt(i);
           if (chr & ANA_READ) {  //if the packet is analogRead
@@ -328,6 +328,8 @@
       this.ready = true;
       this.onReady();
     };
+
+    this.init = function() {};
 
     this.createdCallback = function() {
     };
@@ -415,11 +417,8 @@
 
     this.onConnect = function() {};
 
-    // function to call when the websocket server connects to the serial port.
-    this.serialOpenCB = function() {
-      console.log('opened serial');
-      this.onConnect();
-      this.ready = true;
+    this.init = function() {
+      console.log('initialize hardware');
       var _this = this;
       this.onReady();
       var inputs = [].slice.call(this.querySelectorAll('in-put'));
@@ -449,6 +448,14 @@
           });
         }
       });
+    };
+
+    // function to call when the websocket server connects to the serial port.
+    this.serialOpenCB = function() {
+      console.log('opened serial');
+      this.onConnect();
+      this.ready = true;
+      this.init();
     };
 
     this.createdCallback = function() {
