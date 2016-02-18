@@ -40,8 +40,12 @@ include(['src/keypad.js'], function() {
       this.button.className = 'select block ' + this.color;
 
       var beaker = µ('#beaker', µ('#svgTemp').content).cloneNode(true);
-      beaker.setAttribute('fill', µ('con-fig')[_this.color].fill);
-      beaker.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+      µ('con-fig').whenLoaded(function() {
+        console.log('beaker');
+        beaker.setAttribute('fill', µ('con-fig')[_this.color].fill);
+        beaker.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+      });
+
       this.button.appendChild(beaker);
 
       var dim = µ('+div', this.button);
@@ -92,8 +96,11 @@ include(['src/keypad.js'], function() {
       this.dialog.className = 'dialog block ' + this.color;
       this.dialog.spin = µ('#wait', µ('#svgTemp').content).cloneNode(true);
       this.dialog.appendChild(this.dialog.spin);
-      this.dialog.spin.setAttribute('fill', µ('con-fig')[_this.color].fill);
-      this.dialog.spin.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+      µ('con-fig').whenLoaded(function() {
+        _this.dialog.spin.setAttribute('fill', µ('con-fig')[_this.color].fill);
+        _this.dialog.spin.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+      });
+
       this.dialog.text = µ('+p', this.dialog);
       this.dialog.text.textContent = 'Dispensing, please wait...';
 
@@ -152,16 +159,25 @@ include(['src/keypad.js'], function() {
       };
 
       this.reset = function(fxn) {
-        console.log('resetting ' + _this.num);
-        localStore.get('dispense' + _this.num, function(resp) {
-          if (resp['dispense' + _this.num]) {
+        var key = 'dispense' + _this.num;
+        localStore.get(key, function(resp) {
+          if (resp[key] == 'true') {
+            console.log('resetting ' + _this.num);
             _this.output.write(0);
             _this.resetPin.write(1);
             setTimeout(function() {
-              var key = 'dispense' + _this.num;
-              localStore.set({ key: false });
+              _this.output.write(0);
+              _this.resetPin.write(0);
+              var store = {};
+              store[key] = '';
+              store[key] += false;
+              localStore.set(store);
+              console.log('done resetting ' + _this.num);
               fxn();
             }, _this.time);
+          } else {
+            console.log('tube ' + _this.num + ' does not need resetting');
+            fxn();
           }
         });
       };
@@ -186,8 +202,11 @@ include(['src/keypad.js'], function() {
           var chck = µ('#check', µ('#svgTemp').content).cloneNode(true);
           chck.style.width = 'auto';
           chck.style.height = '90%';
-          chck.setAttribute('fill', µ('con-fig')[_this.color].fill);
-          chck.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+          µ('con-fig').whenLoaded(function() {
+            chck.setAttribute('fill', µ('con-fig')[_this.color].fill);
+            chck.setAttribute('stroke', µ('con-fig')[_this.color].hex);
+          });
+
           t.appendChild(chck);
 
           _this.submit.style.opacity = '.25';
@@ -211,7 +230,10 @@ include(['src/keypad.js'], function() {
           }
 
           var key = 'dispense' + _this.num;
-          localStore.set({ key: true });
+          var store = {};
+          store[key] = '';
+          store[key] += true;
+          localStore.set(store);
           _this.output.write(0);
         }, this.time);
       };

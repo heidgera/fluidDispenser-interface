@@ -30,15 +30,12 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   µ('#complete').spin.style.left = '37.5%';
 
   function resetNext(num) {
-    localStore.get('dispense' + num, function(resp) {
-      if (resp['dispense' + num]) {
-        µ('disp-enser[output=' + i + ']').reset(resetNext(num + 1));
-      } else if (num < 7) resetNext(num + 1);
-    });
+    var key = 'dispense' + num;
+    if (num < 7)
+      µ('disp-enser:nth-child(' + num + ')').reset(function() {resetNext(num + 1);});
   }
 
-  µ('hard-ware').onConnect = function() {
-    var i = 1;
+  µ('hard-ware').onReady = function() {
     resetNext(1);
     µ('#cylinder').write(1);
   };
@@ -53,7 +50,8 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   µ('#fullReset').onData = function(val) {
     if (val) {
-      resetNext(1);
+      //resetNext(1);
+      chrome.runtime.reload();
     }
   };
 
