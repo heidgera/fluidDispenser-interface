@@ -39,6 +39,20 @@ include(['src/keypad.js'], function() {
       this.button = µ('+div', this);
       this.button.className = 'select block ' + this.color;
 
+      this.audStart = µ('#pumpStart', µ('#pumpAudio').content).cloneNode(true);
+      this.audStart.load();
+      this.audStart.onended = function() {
+        this.audSteady.play();
+      };
+
+      this.audEnd = µ('#pumpEnd', µ('#pumpAudio').content).cloneNode(true);
+      this.audEnd.load();
+
+      this.audSteady = µ('#pumpSteady', µ('#pumpAudio').content).cloneNode(true);
+      this.audSteady.load();
+
+      //this.appendChild(this.audSteady);
+
       var beaker = µ('#beaker', µ('#svgTemp').content).cloneNode(true);
       µ('con-fig').whenLoaded(function() {
         console.log('beaker');
@@ -188,7 +202,10 @@ include(['src/keypad.js'], function() {
 
         _this.resetPin.write(0);
         _this.output.write(1);
+        _this.audStart.play();
         setTimeout(function() {
+          _this.audSteady.pause();
+          _this.audEnd.play();
           _this.dispensing = false;
           _this.done = true;
           fade.style.display = 'none';

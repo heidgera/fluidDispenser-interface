@@ -35,7 +35,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
       µ('disp-enser:nth-child(' + num + ')').reset(function() {resetNext(num + 1);});
   }
 
-  µ('hard-ware').onReady = function() {
+  µ('hard-ware').onConnect = function() {
     resetNext(1);
     µ('#cylinder').write(1);
   };
@@ -52,6 +52,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
     if (val) {
       //resetNext(1);
       chrome.runtime.reload();
+      //location.reload();
     }
   };
 
