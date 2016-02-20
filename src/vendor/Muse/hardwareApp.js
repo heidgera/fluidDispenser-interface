@@ -266,6 +266,8 @@
             //extract the pin number
             var pin = ((chr & 62) >> 1);
             var val = chr & 1;
+
+            //console.log(pin + ' is ' + val);
             if (typeof _this.digiHandlers[pin] == 'function') _this.digiHandlers[pin](pin, val);
           }
         }
@@ -420,6 +422,7 @@
     this.init = function() {
       console.log('initialize hardware');
       var _this = this;
+      this.ready = true;
       this.onReady();
       var inputs = [].slice.call(this.querySelectorAll('in-put'));
       inputs.forEach(function(item, i, arr) {
@@ -454,8 +457,6 @@
     this.serialOpenCB = function() {
       console.log('opened serial');
       this.onConnect();
-      this.ready = true;
-      this.init();
     };
 
     this.createdCallback = function() {

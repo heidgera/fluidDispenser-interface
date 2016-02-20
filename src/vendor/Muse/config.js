@@ -1,6 +1,5 @@
 var configFile = inheritFrom(HTMLElement, function() {
   this.loaded = false;
-  this.onLoad = function() {};
 
   function objectify(node, parentObj) {
     var kids = node.children;
@@ -17,11 +16,24 @@ var configFile = inheritFrom(HTMLElement, function() {
 
   this.createdCallback = function() {
     var _this = this;
-    _this.loaded = true;
+    _this.loadFxns = [];
+
+    _this.onXMLLoad = function() {
+      for (var i = 0; i < _this.loadFxns.length; i++) {
+        _this.loadFxns[i]();
+      }
+    };
+
+    _this.whenLoaded = function(fxn) {
+      if (!_this.loaded) _this.loadFxns.push(fxn), console.log('pushed fxn');
+      else fxn();
+    };
+
     var fileAddress = this.getAttribute('file');
     ajax(fileAddress, function(xml) {
       objectify(xml.firstChild, _this);
-      _this.onLoad();
+      _this.onXMLLoad();
+      _this.loaded = true;
     });
   };
 });

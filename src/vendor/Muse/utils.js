@@ -74,6 +74,15 @@ function ajax(src, fxn) {
   return ret;
 }
 
+function transplant(node) {
+  var temp = node.cloneNode(true);
+  var par = node.parentElement;
+  par.insertBefore(temp, node);
+  par.removeChild(node);
+
+  return temp;
+}
+
 /***************************************
 these work like this:
 
@@ -128,7 +137,7 @@ function b64toBlobURL(b64Data, contentType, sliceSize) {
     byteArrays.push(byteArray);
   }
 
-  var blob = new Blob(byteArrays, {type: contentType});
+  var blob = new Blob(byteArrays, { type: contentType });
   return URL.createObjectURL(blob);
 }
 
@@ -173,7 +182,7 @@ Array.prototype.last = function() {
 function getPos(el) {
   // yay readability
   for (var lx = 0, ly = 0; el != null; lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
-  return {x: lx, y: ly};
+  return { x: lx, y: ly };
 }
 
 function aveCont(points) {
@@ -182,23 +191,33 @@ function aveCont(points) {
   this.ave = 0;
   var ind = 0;
   var tot = 0;
-  for (var i = 0; i < points; i++) {
-    samps.push(0.0);
-  }
+
+  //for (var i = 0; i < points; i++) {
+  //  samps.push(0.0);
+  //}
 
   this.changeNumSamps = function(num) {
     samps.length = 0;
-    for (var i = 0; i < num; i++) {
-      samps.push(0.0);
-    }
+
+    //for (var i = 0; i < num; i++) {
+    //  samps.push(0.0);
+    //}
+    points = num;
+  };
+
+  this.clear = function() {
+    samps.length = 0;
+
   };
 
   this.addSample = function(val) {
-    tot -= samps[ind];
-    samps[ind] = val;
+    if (samps.length >= points) {
+      tot -= samps[ind];
+      samps[ind] = val;
+    } else samps.push(val);
     tot += val;
     this.ave = tot / samps.length;
-    ind = (ind + 1) % samps.length;
+    ind = (ind + 1) % points;
     return this.ave;
   };
 

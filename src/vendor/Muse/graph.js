@@ -59,10 +59,9 @@ include(['./pointStack.js'], function() {
     };
 
     this.convert = function(val, which) {
-      //if (!this.range[which].flip)
-      return map(val, 0, 1, this.range[which].min, this.range[which].max);
+      if (!this.range[which].flip) return map(val, 0, 1, this.range[which].min, this.range[which].max);
 
-      //else return map(val, 1, 0, this.range[which].min, this.range[which].max);
+      else return map(val, 1, 0, this.range[which].min, this.range[which].max);
     };
 
     // Convert grid coordinates to pixel coordinates
@@ -209,21 +208,32 @@ include(['./pointStack.js'], function() {
       //this.canvas = document.createElement('canvas');
       //this.setup(this);
       this.range = new param();
-
+                              
+                              this.newPoint = {
+                              x:{
+                              val:0,
+                              new:false,
+                              },
+                              y:{
+                              val:0,
+                              new:false,
+                              },
+                              };
+                              
       var xR = {min:µ('|>xMin', this), max:µ('|>xMax', this)};
       var yR = {min:µ('|>yMin', this), max:µ('|>yMax', this)};
       this.setRange(xR.min, xR.max, yR.min, yR.max);
       this.setNumDivs(µ('|>xDiv', this), µ('|>yDiv', this));
       var flip = '';
       if (flip = µ('|>flip', this)) {
-        this.range.x.flip = ~µ('|>flip', this).indexOf('x');
-        this.range.y.flip = ~µ('|>flip', this).indexOf('y');
+                              this.range.x.flip = (~µ('|>flip', this).indexOf('x'))?true:false;
+        this.range.y.flip = (~µ('|>flip', this).indexOf('y'))?true:false;
       }
 
       numPoints = µ('|>numPoints', this);
 
       ctx = this.getContext('2d');
-      this.points = new pointStack((numPoints) ? parseInt(numPoints) : 500);
+      this.points = new pointStack((numPoints) ? parseInt(numPoints) : 1500);
 
       this.labelFont = 'lighter 2vh sans-serif';
       this.fontColor = '#000';
