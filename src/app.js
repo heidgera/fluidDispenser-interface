@@ -52,6 +52,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
     if (val) {
       //resetNext(1);
       chrome.runtime.reload();
+
       //location.reload();
     }
   };
@@ -89,16 +90,13 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   document.onkeypress = function(e) {
 
     e.preventDefault();
-    var keyCode = (window.event) ? e.which : e.keyCode;
-
-    if (keyCode >= 32 && keyCode <= 126) {            // 'a' = Screen activity button
-      if (keyCode == 32) keyCode = 160, console.log('space');;
-      if (curPrompt) {
-        var fld = µ('.fld', curPrompt);
-        var newChar = String.fromCharCode(keyCode);
-        fld.textContent = fld.textContent + newChar;
-      }
-
+    var press = String.fromCharCode(e.keyCode);
+    if (press == ' ') {
+      console.log('release');
+      µ('#cylinder').write(0);
+    } else if (press == '=') {
+      console.log('close');
+      µ('#cylinder').write(1);
     }
 
   };

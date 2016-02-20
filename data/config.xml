@@ -5,8 +5,8 @@
     <fill>#030</fill>
   </green>
   <red type="object">
-    <hex>#f10</hex>
-    <fill>#300</fill>
+    <hex>#f39</hex>
+    <fill>#301</fill>
   </red>
   <blue type="object">
     <hex>#0cf</hex>
@@ -17,7 +17,7 @@
     <fill>#320</fill>
   </orange>
   <violet type="object">
-    <hex>#f0f</hex>
+    <hex>#c7f</hex>
     <fill>#303</fill>
   </violet>
   <yellow type="object">
