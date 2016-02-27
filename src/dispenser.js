@@ -39,17 +39,31 @@ include(['src/keypad.js'], function() {
       this.button = µ('+div', this);
       this.button.className = 'select block ' + this.color;
 
-      this.audStart = µ('#pumpStart', µ('#pumpAudio').content).cloneNode(true);
+      var ctx = new window.AudioContext();
+
+      function playSound(arrBuff) { // Obtain arrBuffer from XHR
+        var src = ctx.createBufferSource();
+        src.buffer = ctx.createBuffer(arrBuff, false /*mix2Mono*/);
+        src.looping = true;
+
+        src.connect(ctx.destination);
+        src.noteOn(0); // Play immediately.
+      }
+
+      this.audSteady = µ('#pumpSteady');
+      this.audSteady.load();
+
+      this.audStart = µ('#pumpStart');
       this.audStart.load();
-      this.audStart.onended = function() {
-        this.audSteady.play();
+      this.audStart.onplay = function() {
+        setTimeout(function() {
+          _this.audSteady.currentTime = 0;
+          _this.audSteady.play();
+        }, _this.audStart.duration - 0.5);
       };
 
-      this.audEnd = µ('#pumpEnd', µ('#pumpAudio').content).cloneNode(true);
+      this.audEnd = µ('#pumpEnd');
       this.audEnd.load();
-
-      this.audSteady = µ('#pumpSteady', µ('#pumpAudio').content).cloneNode(true);
-      this.audSteady.load();
 
       //this.appendChild(this.audSteady);
 
@@ -96,7 +110,7 @@ include(['src/keypad.js'], function() {
       //create the instruction div
       this.instruct = µ('+div', this.face);
       this.instruct.className = 'instruct ' + this.color;
-      this.instruct.textContent = 'Enter passcode on the keypad';
+      this.instruct.textContent = 'Enter amount on keypad';
 
       //create the return button
       this.ret = µ('+div', this.face);
@@ -175,7 +189,7 @@ include(['src/keypad.js'], function() {
       this.reset = function(fxn) {
         var key = 'dispense' + _this.num;
         localStore.get(key, function(resp) {
-          if (resp[key] == 'true') {
+          if (resp[key] == 'true' && µ('hard-ware').ready) {
             console.log('resetting ' + _this.num);
             _this.output.write(0);
             _this.resetPin.write(1);
@@ -200,8 +214,11 @@ include(['src/keypad.js'], function() {
         fade.style.display = 'block';
         _this.dispensing = true;
 
-        _this.resetPin.write(0);
-        _this.output.write(1);
+        if (µ('hard-ware').ready) {
+          _this.resetPin.write(0);
+          _this.output.write(1);
+        }
+
         _this.audStart.play();
         setTimeout(function() {
           _this.audSteady.pause();
@@ -238,9 +255,9 @@ include(['src/keypad.js'], function() {
           if (done) {
             _this.close();
             µ('#complete').style.display = 'block';
-            µ('#cylinder').write(0);
-            console.log('released cylinder');
             setTimeout(function() {
+              µ('#cylinder').write(0);
+              console.log('released cylinder');
               µ('div', µ('#complete')).innerHTML = '';
               µ('div', µ('#complete')).textContent = 'Process Complete';
             }, 3000);
@@ -251,7 +268,8 @@ include(['src/keypad.js'], function() {
           store[key] = '';
           store[key] += true;
           localStore.set(store);
-          _this.output.write(0);
+          if (µ('hard-ware').ready)
+            _this.output.write(0);
         }, this.time);
       };
 

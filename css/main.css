@@ -249,3 +249,24 @@ sub {
 #welcome {
 
 }
+
+.comSelect {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.comSelect select {
+  position: relative;
+  top:50%;
+}
+
+.comSelect button {
+  position: relative;
+  margin-left: 15px;
+  top:50%;
+}

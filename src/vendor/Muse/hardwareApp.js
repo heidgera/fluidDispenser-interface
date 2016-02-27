@@ -1,4 +1,4 @@
-﻿include([], function() {
+﻿include(['./utils.js'], function() {
   var serial = function() {
     var _this = this;
     this.port = '';
@@ -6,10 +6,12 @@
 
     this.connect = function(partialName, cb) {
       chrome.serial.getDevices(function(ports) {
+        var found = false;
         for (var i = 0; i < ports.length; i++) {
           console.log(ports[i].path);
           if (ports[i].path.indexOf(partialName) > -1) {
             _this.port = ports[i].path;
+            found = true;
             chrome.serial.connect(_this.port, { bitrate: 115200 }, function(info) {
               _this.connectionId = info.connectionId;
               setTimeout(cb, 2000);
@@ -19,7 +21,33 @@
           }
         }
 
-        console.log(partialName + ' not found');
+        if (!found) {
+          console.log(partialName + ' not found, select port');
+          var body = document.querySelector('body');
+          var selector = document.createElement('div');
+          selector.className = 'comSelect';
+          body.appendChild(selector);
+          var drop = document.createElement('select');
+          selector.appendChild(drop);
+          var sel = document.createElement('button');
+          selector.appendChild(sel);
+          sel.textContent = 'Choose';
+          for (var i = 0; i < ports.length; i++) {
+            var opt = document.createElement('option');
+            opt.text = ports[i].path;
+            drop.add(opt);
+          }
+
+          sel.onclick = function() {
+            _this.port = drop.value;
+            chrome.serial.connect(_this.port, { bitrate: 115200 }, function(info) {
+              _this.connectionId = info.connectionId;
+              setTimeout(cb, 2000);
+            });
+            selector.style.display = 'none';
+          };
+        }
+
       });
     };
 

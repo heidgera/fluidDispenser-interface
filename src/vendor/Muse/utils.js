@@ -74,6 +74,39 @@ function ajax(src, fxn) {
   return ret;
 }
 
+function loadFile(src, Fxn) {
+  var _this = this;
+  var http = new XMLHttpRequest();
+  _this.xml = null;
+
+  _this.loadFxns = [];
+
+  _this.onXMLLoad = function() {
+    for (var i = 0; i < _this.loadFxns.length; i++) {
+      _this.loadFxns[i]();
+    }
+  };
+
+  _this.whenLoaded = function(fxn) {
+    var _this = this;
+    if (!_this.loaded) _this.loadFxns.push(fxn);
+    else fxn();
+  };
+
+  http.open('get', src);
+  http.responseType = 'document';
+  http.onreadystatechange = function() {
+    if (http.readyState == 4) {
+      _this.xml = http.responseXML;
+      Fxn(_this.xml);
+    }
+  };
+
+  http.send(null);
+
+  return this;
+}
+
 function transplant(node) {
   var temp = node.cloneNode(true);
   var par = node.parentElement;
