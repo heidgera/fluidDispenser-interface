@@ -65,6 +65,9 @@ include(['src/keypad.js'], function() {
       this.audEnd = µ('#pumpEnd');
       this.audEnd.load();
 
+      this.mixAudio = µ('#mixAudio');
+      this.mixAudio.load();
+
       //this.appendChild(this.audSteady);
 
       var beaker = µ('#beaker', µ('#svgTemp').content).cloneNode(true);
@@ -255,12 +258,13 @@ include(['src/keypad.js'], function() {
           if (done) {
             _this.close();
             µ('#complete').style.display = 'block';
+            _this.mixAudio.play();
             setTimeout(function() {
               µ('#cylinder').write(0);
               console.log('released cylinder');
               µ('div', µ('#complete')).innerHTML = '';
               µ('div', µ('#complete')).textContent = 'Process Complete';
-            }, 3000);
+            }, 9000);
           }
 
           var key = 'dispense' + _this.num;
