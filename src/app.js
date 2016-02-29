@@ -36,6 +36,10 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   }
 
   µ('hard-ware').onConnect = function() {
+    var authClock = setInterval(function() {
+      µ('hard-ware').digitalRead(14);
+    }, 500);
+
     resetNext(1);
     µ('#cylinder').write(1);
   };
