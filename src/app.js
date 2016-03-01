@@ -130,10 +130,10 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
           µ('#reset' + (j + 1)).write(0);
         }
 
-        µ('#reset' + (i + 1)).write(0);
-        µ('#tube' + (i + 1)).write(1);
+        µ('#reset' + (i + 1)).write(1);
+        µ('#tube' + (i + 1)).write(0);
         minTimers[minReset[i]] = setTimeout(function() {
-          µ('#tube' + (i + 1)).write(0);
+          µ('#reset' + (i + 1)).write(0);
         }, 60000);
       }
     }
@@ -148,7 +148,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   document.onkeyup = function(e) {
     for (var i = 0; i < 6; i++) {
       if (String.fromCharCode(e.which) == outputs[i] ||
-       String.fromCharCode(e.which) == resets[i]){
+       String.fromCharCode(e.which) == resets[i]) {
         µ('#tube' + (i + 1)).write(0);
         µ('#reset' + (i + 1)).write(0);
       }
