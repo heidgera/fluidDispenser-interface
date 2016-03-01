@@ -147,10 +147,11 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   document.onkeyup = function(e) {
     for (var i = 0; i < 6; i++) {
-      if (String.fromCharCode(e.which) == outputs[i])
+      if (String.fromCharCode(e.which) == outputs[i] ||
+       String.fromCharCode(e.which) == resets[i]){
         µ('#tube' + (i + 1)).write(0);
-      else if (String.fromCharCode(e.which) == resets[i])
         µ('#reset' + (i + 1)).write(0);
+      }
     }
   };
 });
