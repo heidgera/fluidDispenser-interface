@@ -151,6 +151,8 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
        String.fromCharCode(e.which) == resets[i]) {
         µ('#tube' + (i + 1)).write(0);
         µ('#reset' + (i + 1)).write(0);
+        if (minTimers[minReset[i]])
+          clearTimeout(minTimers[minReset[i]]);
       }
     }
   };
