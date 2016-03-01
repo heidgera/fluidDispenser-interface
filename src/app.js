@@ -126,8 +126,10 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
         µ('#tube' + (i + 1)).write(1);
       } else if (String.fromCharCode(e.which) == minReset[i]) {
         for (var j = 0; j < outputs.length; j++) {
-          outputs[j].write(0);
+          µ('#tube' + (j + 1)).write(0);
+          µ('#reset' + (j + 1)).write(0);
         }
+
         µ('#reset' + (i + 1)).write(0);
         µ('#tube' + (i + 1)).write(1);
         minTimers[minReset[i]] = setTimeout(function() {
