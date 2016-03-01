@@ -132,8 +132,9 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
         µ('#reset' + (i + 1)).write(1);
         µ('#tube' + (i + 1)).write(0);
+        var tubeStop = µ('#reset' + (i + 1));
         minTimers[minReset[i]] = setTimeout(function() {
-          µ('#reset' + (i + 1)).write(0);
+          tubeStop.write(0);
         }, 60000);
       }
     }
