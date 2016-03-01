@@ -35,10 +35,14 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
       µ('disp-enser:nth-child(' + num + ')').reset(function() {resetNext(num + 1);});
   }
 
-  µ('hard-ware').onConnect = function() {
-    var authClock = setInterval(function() {
-      µ('hard-ware').digitalRead(14);
-    }, 500);
+  var authClock = null;
+
+  µ('hard-ware').onReady = function() {
+    if (authLockout) {
+      authClock = setInterval(function() {
+        µ('#auth').read();
+      }, 500);
+    }
 
     resetNext(1);
     µ('#cylinder').write(1);
@@ -49,6 +53,8 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
       authLockout = false;
       µ('#authLock').style.display = 'none';
       console.log('unlock');
+      if (authClock) clearInterval(authClock);
+      authClock = null;
     }
   };
 
@@ -107,6 +113,8 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   var outputs = ['1', '2', '3', '4', '5', '6'];
   var resets = ['Q', 'W', 'E', 'R', 'T', 'Y'];
+  var minReset = ['A', 'S', 'D', 'F', 'G', 'H'];
+  var minTimers = {};
 
   document.onkeydown = function(e) {
     for (var i = 0; i < 6; i++) {
@@ -116,6 +124,15 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
       } else if (String.fromCharCode(e.which) == resets[i]) {
         µ('#reset' + (i + 1)).write(0);
         µ('#tube' + (i + 1)).write(1);
+      } else if (String.fromCharCode(e.which) == minReset[i]) {
+        for (var j = 0; j < outputs.length; j++) {
+          outputs[j].write(0);
+        }
+        µ('#reset' + (i + 1)).write(0);
+        µ('#tube' + (i + 1)).write(1);
+        minTimers[minReset[i]] = setTimeout(function() {
+          µ('#tube' + (i + 1)).write(0);
+        }, 60000);
       }
     }
 
@@ -128,8 +145,10 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
 
   document.onkeyup = function(e) {
     for (var i = 0; i < 6; i++) {
-      µ('#reset' + (i + 1)).write(0);
-      µ('#tube' + (i + 1)).write(0);
+      if (String.fromCharCode(e.which) == outputs[i])
+        µ('#tube' + (i + 1)).write(0);
+      else if (String.fromCharCode(e.which) == resets[i])
+        µ('#reset' + (i + 1)).write(0);
     }
   };
 });
