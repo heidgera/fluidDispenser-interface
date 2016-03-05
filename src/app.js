@@ -126,12 +126,9 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
         µ('#reset' + (i + 1)).write(0);
         µ('#tube' + (i + 1)).write(1);
       } else if (String.fromCharCode(e.which) == minReset[i]) {
-        for (var j = 0; j < outputs.length; j++) {
+        for (var j = 0; j < 6; j++) {
           µ('#tube' + (j + 1)).write(0);
           µ('#reset' + (j + 1)).write(0);
-
-          //if (minTimers[minReset[j]])
-          //  clearTimeout(minTimers[minReset[j]]);
           clearTimeout(minTimer);
         }
 
