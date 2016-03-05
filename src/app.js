@@ -115,6 +115,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
   var resets = ['Q', 'W', 'E', 'R', 'T', 'Y'];
   var minReset = ['A', 'S', 'D', 'F', 'G', 'H'];
   var minTimers = {};
+  var minTimer = null;
 
   document.onkeydown = function(e) {
     for (var i = 0; i < 6; i++) {
@@ -128,18 +129,24 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
         for (var j = 0; j < outputs.length; j++) {
           µ('#tube' + (j + 1)).write(0);
           µ('#reset' + (j + 1)).write(0);
+
+          //if (minTimers[minReset[j]])
+          //  clearTimeout(minTimers[minReset[j]]);
+          clearTimeout(minTimer);
         }
 
         µ('#reset' + (i + 1)).write(1);
         µ('#tube' + (i + 1)).write(0);
         var tubeStop = µ('#reset' + (i + 1));
-        minTimers[minReset[i]] = setTimeout(function() {
+
+        //minTimers[minReset[i]]
+        minTimer = setTimeout(function() {
           tubeStop.write(0);
-        }, 60000);
+        }, 180000);
       }
     }
 
-    if (e.which == 27) {
+    if (String.fromCharCode(e.which) == 'U') {
       authLockout = false;
       µ('#authLock').style.display = 'none';
       console.log('unlock');
