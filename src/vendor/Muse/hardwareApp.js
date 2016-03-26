@@ -44,6 +44,7 @@
               _this.connectionId = info.connectionId;
               setTimeout(cb, 2000);
             });
+
             selector.style.display = 'none';
           };
         }

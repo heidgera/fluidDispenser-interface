@@ -129,13 +129,13 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
         for (var j = 0; j < 6; j++) {
           µ('#tube' + (j + 1)).write(0);
           µ('#reset' + (j + 1)).write(0);
-          //console.log((j + 1) + ' stopped');
+          console.log((j + 1) + ' stopped');
           clearTimeout(minTimer);
         }
 
         µ('#reset' + (i + 1)).write(1);
         µ('#tube' + (i + 1)).write(0);
-        //console.log('start ' + (i + 1));
+        console.log('start ' + (i + 1));
         var tubeStop = µ('#reset' + (i + 1));
 
         setTimeout(function() {
@@ -145,7 +145,7 @@ include([hardwareJS, './config.js', 'src/dispenser.js'], function() {
         //minTimers[minReset[i]]
         minTimer = setTimeout(function() {
           tubeStop.write(0);
-          //console.log('auto stop ' + tubeStop.id);
+          console.log('auto stop ' + tubeStop.id);
         }, 180000);
       }
     }
